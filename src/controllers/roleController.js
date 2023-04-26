@@ -52,6 +52,22 @@ roleController.deleteRole = async (req, res) => {
       } 
     }
 
+  roleController.updateRole = async (req, res) => {
+    try {
+      const role = await Role.findOne({ _id: req.params.id });
+      console.log(role);
+      if (role == null) {
+        return res.status(404).json({ message: "Cannot find role" });
+      }
+      role.name = req.body.name;
+      role.devices = req.body.devices;
+      role.save();
+      res.json({ message: "Role updated successfully" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+  
 
 
 

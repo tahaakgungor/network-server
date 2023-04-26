@@ -6,6 +6,7 @@ router.get("/", roleController.getRoles);
 router.post("/", roleController.postRoles);
 router.get("/:id", roleController.getRole);
 router.delete("/:id", roleController.deleteRole);
+router.put("/:id", roleController.updateRole);
 
 
 

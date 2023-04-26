@@ -75,6 +75,7 @@ const updateDevice = async (req, res) => {
   let device;
   try {
     device = await Device.findOne({ _id: req.params.id });
+    console.log("device", device);
 
     if (device == null) {
       return res.status(404).json({ message: "Cannot find device" });
