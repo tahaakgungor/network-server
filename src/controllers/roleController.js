@@ -6,6 +6,7 @@ const roleController = {};
 roleController.getRoles = async (req, res) => {
     try {
         const roles = await Role.find().populate("devices");
+        console.log("roles", roles);
         res.json(roles);
       } catch (err) {
         res.status(500).json({ message: err.message });
