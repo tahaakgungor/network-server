@@ -2,6 +2,7 @@
     "env": {
         "DB_USER": "tahaakgungor",
         "DB_PASSWORD": "36987412tT",
-        "JWT_SECRET": "secret"
+        "JWT_SECRET": "secret",
+        "PORT":5000
     }
 }
