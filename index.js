@@ -8,7 +8,10 @@ const roleRoutes = require("./src/routes/roleRoutes");
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://network-automation-d31c2.web.app'
+}));
+
 app.use(express.json());
 
 connectDB();
