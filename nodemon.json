@@ -1,6 +1,7 @@
 {
     "env": {
         "DB_USER": "tahaakgungor",
-        "DB_PASSWORD": "36987412tT"
+        "DB_PASSWORD": "36987412tT",
+        "JWT_SECRET": "secret"
     }
 }
