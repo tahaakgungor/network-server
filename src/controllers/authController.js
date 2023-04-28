@@ -9,7 +9,7 @@ const authController = {};
 
 authController.getUser = async (req, res) => {
   try {
- 
+    
     const existingUser = await User.find({ email: req.body.email})
     console.log("existingUser", req.body);
     console.log("existingUsesr", existingUser);
