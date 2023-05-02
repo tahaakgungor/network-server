@@ -139,6 +139,7 @@ authController.postUserLog = async (req, res) => {
       activity,
       notes,
     });
+    console.log("newLog", newLog);
     await newLog.save();
     res.status(201).json({ message: "Log created successfully" });
   } catch (error) {
