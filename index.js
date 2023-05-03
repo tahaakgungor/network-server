@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const deviceRoutes = require("./src/routes/device-routes");
+
 const connectDB = require("./src/config/database");
+const deviceRoutes = require("./src/routes/device-routes");
 const authRoutes = require("./src/routes/authRoutes");
 const roleRoutes = require("./src/routes/roleRoutes");
+const logRoutes = require("./src/routes/logRoutes");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -23,6 +25,8 @@ app.use("/devices", deviceRoutes,(err, req, res, next) => {
 app.use("/auth", authRoutes);
 
 app.use("/roles", roleRoutes);
+
+app.use("/logs", logRoutes);
 
 const port = 5001
 

@@ -1,13 +1,25 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const Log = require("../models/log");
 const dotenv = require("dotenv");
 dotenv.config();
 const jwtSecret = process.env.JWT_SECRET;
 
 const authController = {};
 
+authController.getUserById = async (req, res) => {
+  try {
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+  if (!user) {
+  return res.status(404).json({ message: "User not found" });
+  }
+  return res.status(200).json(user);
+  } catch (error) {
+  console.error(error);
+  return res.status(500).json({ message: "Server error" });
+  }
+  };
 authController.getUser = async (req, res) => {
   try {
     
@@ -116,37 +128,6 @@ authController.login = async (req, res) => {
   }
 };
 
-authController.getUserLog = async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const userLogs = await Log.find({ user: userId });
-    console.log("userLogs", userLogs);
-    res.status(200).json(userLogs);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-authController.postUserLog = async (req, res) => {
-  try {
-    const { user, date, time, duration, activity, notes } = req.body;
-    const newLog = new Log({
-      user,
-      date,
-      time,
-      duration,
-      activity,
-      notes,
-    });
-    console.log("newLog", newLog);
-    await newLog.save();
-    res.status(201).json({ message: "Log created successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
 
 
 

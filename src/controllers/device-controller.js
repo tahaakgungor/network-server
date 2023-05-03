@@ -21,7 +21,7 @@ const results = [];
 
 const getSelectedDevices = async (req, res) => {
   try {
-    console.log("SELECTED:",req.params.id);
+ 
     const selectedDevices = await Device.find({
       _id: { $in: req.params.id }
     });

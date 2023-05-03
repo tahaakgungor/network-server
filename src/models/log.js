@@ -6,21 +6,29 @@ const logSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    date: {
-      type: Date,
-      required: true,
-    },
-    time: {
+    status: {
       type: String,
-      required: true,
+      required: false,
+    },
+    date: {
+      type: String,
+      required: false,
+    },
+    logintime: {
+      type: String,
+      required: false,
+    },
+    logouttime: {
+      type: String,
+      required: false,
     },
     duration: {
       type: Number,
-      required: true,
+      required: false,
     },
     activity: {
-      type: String,
-      required: true,
+      type: Array,
+      required: false,
     },
     notes: {
       type: String,
