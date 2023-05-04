@@ -29,6 +29,7 @@ logController.getUserLog = async (req, res) => {
 logController.getUserLastLog = async (req, res) => {
   try {
     const userId = req.params.id;
+    console.log(userId)
     const lastLog = await Log.find({ user: userId }).sort({ _id: -1 }).limit(1);
 
     res.status(200).json(lastLog);
