@@ -5,6 +5,17 @@ dotenv.config();
 
 const logController = {};
 
+logController.deleteUserLog = async (req, res) => {
+    try {
+        const log = await Log.findByIdAndDelete(req.params.id);
+        console.log("log deleted successfully");
+        res.status(200).json({ message: "Log deleted successfully" });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 logController.getUserLog = async (req, res) => {
     try {
         const userId = req.params.id;
@@ -47,9 +58,10 @@ logController.getUserLastLog = async (req, res) => {
             status,
             logouttime,
         },
-        { new: false }
+        { new: true }
         );
         console.log("updatedLog", updatedLog);
+
       res.status(200).json(updatedLog);
     } catch (error) {
       console.error(error);

@@ -13,5 +13,7 @@ router.get("/user/last/:id", logController.getUserLastLog);
 //POST LOGGED IN USER
 router.post("/user/:id", logController.postUserLog);
 
+router.delete("/user/:id", logController.deleteUserLog);
+
 
 module.exports = router;
