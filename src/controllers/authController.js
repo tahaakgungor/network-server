@@ -78,6 +78,7 @@ authController.signup = async (req, res) => {
 
   try {
     const existingUser = await User.findOne({ email });
+    console.log("existingUser", req.body);
 
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
@@ -100,9 +101,14 @@ authController.signup = async (req, res) => {
 
 authController.login = async (req, res) => {
   const { email, password } = req.body;
+  console.log("req.body", req.body);
 
   try {
+ 
     const user = await User.findOne({ email });
+    req.session.userId = user.id;
+    console.log("req.session.userId", req.session.userId);
+
     console.log("user", user);
 
     if (!user) {
