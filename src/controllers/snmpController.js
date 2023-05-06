@@ -14,6 +14,7 @@ snmpController.getAllSnmpInfo = async (req, res) => {
         const session = new snmp.Session({
           host: device.host,
           community: device.community,
+          port: 5002
         });
         const oids = device.oid;
         console.log("oisd", device);
@@ -32,6 +33,7 @@ snmpController.getAllSnmpInfo = async (req, res) => {
             snmpDataList.push(snmpData);
             console.log("snmpDataList", snmpDataList);
           }
+          console.log(session)
           session.close();
         });
       });
