@@ -9,22 +9,28 @@ snmpController.getAllSnmpInfo = async (req, res) => {
     try {
       const devices = await Snmp.find();
       const snmpDataList = [];
-  
+        console.log("devices", devices);
       devices.forEach(async (device) => {
         const session = new snmp.Session({
           host: device.host,
           community: device.community,
         });
-        const oid = device.oid;
-        session.get({ oid }, (err, varbinds) => {
+        const oids = device.oid;
+        console.log("oisd", device);
+        session.get({ oids }, (err, varbinds) => {
           if (err) {
             console.error(err);
           } else {
+            console.log(varbinds);
             const snmpData = {
               deviceName: device.name,
-              value: varbinds[0].value,
+                deviceIp: device.host,
+                deviceType: device.device_type,
+        
+                
             };
             snmpDataList.push(snmpData);
+            console.log("snmpDataList", snmpDataList);
           }
           session.close();
         });
@@ -39,8 +45,9 @@ snmpController.getAllSnmpInfo = async (req, res) => {
   };
   
   snmpController.addSnmpInfo = async (req, res) => {
-    const { host, community, oid } = req.body;
-    const device = new Snmp({ host, community, oid });
+    const { host, community, oids } = req.body;
+    console.log("req.body", req.body);
+    const device = new Snmp({ host, community, oids });
     try {
       await device.save();
       res.status(201).send(device);

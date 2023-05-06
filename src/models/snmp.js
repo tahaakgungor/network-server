@@ -10,7 +10,7 @@ const SnmpSchema = new mongoose.Schema({
         required: true,
     },
     oid: {
-        type: String,
+        type: Array,
         required: true,
     },
 });
