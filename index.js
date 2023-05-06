@@ -6,6 +6,7 @@ const deviceRoutes = require("./src/routes/device-routes");
 const authRoutes = require("./src/routes/authRoutes");
 const roleRoutes = require("./src/routes/roleRoutes");
 const logRoutes = require("./src/routes/logRoutes");
+const snmpRoutes = require("./src/routes/snmpRoutes");
 const session = require('express-session');
 const dotenv = require("dotenv");
 dotenv.config();
@@ -41,6 +42,8 @@ app.use("/auth", authRoutes);
 app.use("/roles", roleRoutes);
 
 app.use("/logs", logRoutes);
+
+app.use("/snmp", snmpRoutes);
 
 const port = 5001
 
