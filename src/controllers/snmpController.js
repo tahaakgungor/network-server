@@ -12,7 +12,11 @@ snmpController.getAllSnmpInfo = async (req, res) => {
     const snmpDataList = [];
     const session = new snmp.Session({ host: devices[0].host, community: devices[0].community });
     const oidsUsername = [1,3,6,1,2,1,1,5,0];//username
-    const oids = devices[0].oid;
+    const oids = devices[0].oid.map((oid) => parseInt(oid));
+
+    console.log("oidsUsername", oids);
+    
+    console.log("oids", oids);
     session.get({ oid: oids }, function (err, varbinds) {
       if (err) {
         console.log("Error", err);
@@ -36,7 +40,14 @@ snmpController.getAllSnmpInfo = async (req, res) => {
   snmpController.addSnmpInfo = async (req, res) => {
     const { host, community, oids } = req.body;
     console.log("req.body", req.body);
-    const device = new Snmp({ host, community, oids });
+    const oidsToArr = oids.split(".");
+    console.log("oidsToArr", oidsToArr); 
+    const device = new Snmp({
+      host: host,
+      community: community,
+      oid: oidsToArr,
+    });
+    console.log("device", device);
     try {
       await device.save();
       res.status(201).send(device);
