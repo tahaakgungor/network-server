@@ -6,46 +6,33 @@ const snmp = require('snmp-native');
 const snmpController = {};
 
 snmpController.getAllSnmpInfo = async (req, res) => {
-    try {
-      const devices = await Snmp.find();
-      const snmpDataList = [];
-        console.log("devices", devices);
-      devices.forEach(async (device) => {
-        const session = new snmp.Session({
-          host: device.host,
-          community: device.community,
-          port: 5002
-        });
-        const oids = device.oid;
-        console.log("oisd", device);
-        session.get({ oids }, (err, varbinds) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(varbinds);
-            const snmpData = {
-              deviceName: device.name,
-                deviceIp: device.host,
-                deviceType: device.device_type,
-        
-                
-            };
-            snmpDataList.push(snmpData);
-            console.log("snmpDataList", snmpDataList);
-          }
-          console.log(session)
-          session.close();
-        });
-      });
-  
-      setTimeout(() => {
+  try {
+    const devices = await Snmp.find();
+    console.log("devices", devices);
+    const snmpDataList = [];
+    const session = new snmp.Session({ host: devices[0].host, community: devices[0].community });
+    const oidsUsername = [1,3,6,1,2,1,1,5,0];//username
+    const oids = devices[0].oid;
+    session.get({ oid: oids }, function (err, varbinds) {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        console.log("varbinds", varbinds);
+        snmpDataList.push({ host: devices[0].host, community: devices[0].community, oids: devices[0].oid, value: varbinds[0].value.toString() });
+        console.log("snmpDataList", snmpDataList);
         res.json(snmpDataList);
-      }, 5000);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-  };
-  
+
+      }
+    });
+
+
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
   snmpController.addSnmpInfo = async (req, res) => {
     const { host, community, oids } = req.body;
     console.log("req.body", req.body);
