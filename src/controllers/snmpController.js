@@ -8,7 +8,7 @@ const snmpController = {};
 snmpController.getAllSnmpRegisters = async (req, res) => {
   try {
     const info = await Snmp.find();
-  
+
     res.json(info);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -26,18 +26,26 @@ snmpController.deleteSnmpRegister = async (req, res) => {
 
 snmpController.updateSnmpRegister = async (req, res) => {
   const { host, community, oid } = req.body;
-  console.log("req.body", req.body);
+  let oidsToArr;
+  if (oid.split(",").length > 1) {
+    oidsToArr = oid.split(",");
+
+  } else {
+    oidsToArr = oid.split(".");
+    ;
+  }
 
   try {
-    const res = await Snmp.findByIdAndUpdate(req.body._id, {
+    const updatedRegister = await Snmp.findByIdAndUpdate(req.body._id, {
       host: host,
       community: community,
-      oid: oid,
+      oid: oidsToArr,
     });
 
-    res.json({ message: "Snmp register updated" });
+
+    updatedRegister.json({ message: "Snmp register updated" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    updatedRegister.status(500).json({ message: err.message });
   }
 };
 
@@ -76,7 +84,7 @@ snmpController.getSelectedSnmpInfo = async (req, res) => {
         }
       });
     }
-    
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -86,23 +94,27 @@ snmpController.getSelectedSnmpInfo = async (req, res) => {
 
 
 
-  snmpController.addSnmpInfo = async (req, res) => {
-    const { host, community, oids } = req.body;
-    console.log("req.body", req.body);
-    const oidsToArr = oids.split(".");
-    console.log("oidsToArr", oidsToArr); 
-    const device = new Snmp({
-      host: host,
-      community: community,
-      oid: oidsToArr,
-    });
-    console.log("device", device);
-    try {
-      await device.save();
-      res.status(201).send(device);
-    } catch (error) {
-      res.status(400).send(error);
-    }
-  };
+snmpController.addSnmpInfo = async (req, res) => {
+  const { host, community, oids } = req.body;
+  console.log("req.body", req.body);
+  if (oids.split(",").length > 1) {
+    var oidsToArr = oids.split(",");
+  } else {
+    var oidsToArr = oids.split(".");
+  }
+  console.log("oidsToArr", oidsToArr);
+  const device = new Snmp({
+    host: host,
+    community: community,
+    oid: oidsToArr,
+  });
+  console.log("device", device);
+  try {
+    await device.save();
+    res.status(201).send(device);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
 
-    module.exports = snmpController;
+module.exports = snmpController;
