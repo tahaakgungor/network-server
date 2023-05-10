@@ -5,36 +5,85 @@ const snmp = require('snmp-native');
 
 const snmpController = {};
 
-snmpController.getAllSnmpInfo = async (req, res) => {
+snmpController.getAllSnmpRegisters = async (req, res) => {
   try {
-    const devices = await Snmp.find();
-    console.log("devices", devices);
-    const snmpDataList = [];
-    const session = new snmp.Session({ host: devices[0].host, community: devices[0].community });
-    const oidsUsername = [1,3,6,1,2,1,1,5,0];//username
-    const oids = devices[0].oid.map((oid) => parseInt(oid));
-
-    console.log("oidsUsername", oids);
-    
-    console.log("oids", oids);
-    session.get({ oid: oids }, function (err, varbinds) {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        console.log("varbinds", varbinds);
-        snmpDataList.push({ host: devices[0].host, community: devices[0].community, oids: devices[0].oid, value: varbinds[0].value.toString() });
-        console.log("snmpDataList", snmpDataList);
-        res.json(snmpDataList);
-
-      }
-    });
-
-
-
+    const info = await Snmp.find();
+  
+    res.json(info);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
+snmpController.deleteSnmpRegister = async (req, res) => {
+  try {
+    await Snmp.findByIdAndDelete(req.params.id);
+    res.json({ message: "Snmp register deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+snmpController.updateSnmpRegister = async (req, res) => {
+  const { host, community, oid } = req.body;
+  console.log("req.body", req.body);
+
+  try {
+    const res = await Snmp.findByIdAndUpdate(req.body._id, {
+      host: host,
+      community: community,
+      oid: oid,
+    });
+
+    res.json({ message: "Snmp register updated" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+
+snmpController.getSelectedSnmpInfo = async (req, res) => {
+  try {
+    const selectedIds = req.body.ids;
+    const devices = await Snmp.find({ _id: { $in: selectedIds } });
+    const snmpDataList = [];
+    console.log("devices", devices);
+    // Loop through selected devices and retrieve SNMP data for each one
+    for (const device of devices) {
+      console.log("device", device);
+      const session = new snmp.Session({ host: device.host, community: device.community });
+      const oids = device.oid.map((oid) => parseInt(oid));
+
+      session.get({ oid: oids }, function (err, varbinds) {
+        if (err) {
+          console.log("Error", err);
+        } else {
+          const snmpData = {
+            host: device.host,
+            community: device.community,
+            oids: device.oid,
+            value: varbinds[0].value.toString(),
+          };
+          console.log("snmpData", snmpData);
+          snmpDataList.push(snmpData);
+          console.log("Retrieved SNMP data for device:", device.host);
+        }
+        // If this is the last device, send response with SNMP data list
+        if (snmpDataList.length === devices.length) {
+          console.log("snmpDataList", snmpDataList);
+          res.json(snmpDataList);
+        }
+      });
+    }
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 
 
   snmpController.addSnmpInfo = async (req, res) => {
