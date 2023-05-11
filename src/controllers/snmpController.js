@@ -1,4 +1,5 @@
 const Snmp = require("../models/snmp");
+const SnmpInfos = require("../models/snmpInfos");
 const dotenv = require("dotenv");
 dotenv.config();
 const snmp = require('snmp-native');
@@ -15,13 +16,16 @@ snmpController.getAllSnmpRegisters = async (req, res) => {
   }
 };
 
-snmpController.deleteSnmpRegister = async (req, res) => {
+
+snmpController.deleteSnmpReg = async (req, res) => {
   try {
     await Snmp.findByIdAndDelete(req.params.id);
-    res.json({ message: "Snmp register deleted" });
+    res.json({ message: "Deleted SNMP register" });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+
 };
 
 snmpController.updateSnmpRegister = async (req, res) => {
@@ -41,25 +45,25 @@ snmpController.updateSnmpRegister = async (req, res) => {
       community: community,
       oid: oidsToArr,
     });
-
-
-    updatedRegister.json({ message: "Snmp register updated" });
+    res.json(updatedRegister);
   } catch (err) {
-    updatedRegister.status(500).json({ message: err.message });
+    res.status(400).json({ message: err.message });
   }
 };
-
-
 
 snmpController.getSelectedSnmpInfo = async (req, res) => {
   try {
     const selectedIds = req.body.ids;
+   
     const devices = await Snmp.find({ _id: { $in: selectedIds } });
+
     const snmpDataList = [];
     console.log("devices", devices);
+
+    let completedRequests = 0; // Keep track of completed requests
+
     // Loop through selected devices and retrieve SNMP data for each one
     for (const device of devices) {
-      console.log("device", device);
       const session = new snmp.Session({ host: device.host, community: device.community });
       const oids = device.oid.map((oid) => parseInt(oid));
 
@@ -73,13 +77,36 @@ snmpController.getSelectedSnmpInfo = async (req, res) => {
             oids: device.oid,
             value: varbinds[0].value.toString(),
           };
-          console.log("snmpData", snmpData);
+
           snmpDataList.push(snmpData);
           console.log("Retrieved SNMP data for device:", device.host);
         }
-        // If this is the last device, send response with SNMP data list
-        if (snmpDataList.length === devices.length) {
+
+        completedRequests++; // Increase the completed requests count
+
+        if (completedRequests === devices.length) {
+          // If all requests are completed, send the response
           console.log("snmpDataList", snmpDataList);
+
+          // Create a new SnmpInfos object for each device
+          for (const snmpData of snmpDataList) {
+            const snmpInfos = new SnmpInfos({
+              host: snmpData.host,
+              community: snmpData.community,
+              oids: snmpData.oids,
+              value: snmpData.value,
+            });
+
+            // Save snmpInfos to the database
+            snmpInfos.save()
+              .then(() => {
+                console.log("snmpInfos saved to database");
+              })
+              .catch((error) => {
+                console.error("Failed to save snmpInfos to database:", error);
+              });
+          }
+
           res.json(snmpDataList);
         }
       });
@@ -91,6 +118,29 @@ snmpController.getSelectedSnmpInfo = async (req, res) => {
   }
 };
 
+snmpController.getAllSnmpInfos = async (req, res) => {
+  try {
+
+ 
+    const snmpInfos = await SnmpInfos.find();
+
+ 
+
+    res.json(snmpInfos);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+snmpController.deleteSnmpInfo = async (req, res) => {
+  try {
+    console.log("req.params.id", req.params.id);
+    await SnmpInfos.findByIdAndDelete(req.params.id);
+    res.json({ message: "Snmp info deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 
 
