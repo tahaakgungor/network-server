@@ -121,6 +121,7 @@ const updateDevice = async (req, res) => {
 const deleteDevice = async (req, res) => {
   try {
     const device = await Device.findOne({ _id: req.params.id });
+    console.log("deleteDevice", device);
     if (!device) {
       return res.status(404).json({ error: "Device not found" });
     }

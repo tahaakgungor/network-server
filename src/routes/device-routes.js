@@ -17,7 +17,7 @@ router.post("/", createDevice);
 router.put("/:id",updateDevice);
 
 // Delete one device
-router.delete("/:id", getDevice, deleteDevice );
+router.delete("/:id", deleteDevice );
 
 // Connect devices
 // router.post("/connect/:id",connectDevices);
