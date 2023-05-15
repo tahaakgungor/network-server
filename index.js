@@ -7,7 +7,7 @@ const authRoutes = require("./src/routes/authRoutes");
 const roleRoutes = require("./src/routes/roleRoutes");
 const logRoutes = require("./src/routes/logRoutes");
 const snmpRoutes = require("./src/routes/snmpRoutes");
-const tftpRoutes = require("./src/routes/tftpRoutes");
+
 const session = require('express-session');
 const dotenv = require("dotenv");
 dotenv.config();
@@ -33,10 +33,7 @@ app.use(session({
 
 connectDB();
 
-app.use("/devices", deviceRoutes,(err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: err.message });
-  });
+app.use("/devices", deviceRoutes);
 
 app.use("/auth", authRoutes);
 
@@ -46,7 +43,6 @@ app.use("/logs", logRoutes);
 
 app.use("/snmp", snmpRoutes);
 
-app.use("/tftp", tftpRoutes);
 
 const port = 5001
 
