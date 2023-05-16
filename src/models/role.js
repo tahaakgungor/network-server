@@ -11,6 +11,10 @@ const RoleSchema = new mongoose.Schema({
             ref: "Device",
         },
     ],
+    permissions: {
+        type: String,
+        required: true,
+    }
 });
 
 module.exports = mongoose.model("Role", RoleSchema);

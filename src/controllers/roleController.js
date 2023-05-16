@@ -14,23 +14,37 @@ roleController.getRoles = async (req, res) => {
 
 
 
-roleController.getRole = async (req, res) => {
-    try {
-        const roles = await Role.find();
-        res.status(200).json(roles);
-    } catch (error) {
+    roleController.getRole = async (req, res) => {
+      const roleName = req.params.name;
+
+     
+    
+      try {
+        const role = await Role.find({ name: roleName })
+          .populate("devices")
+          .populate("permissions");
+
+        if (!role) {
+          return res.status(404).json({ message: "Role not found" });
+        }
+        res.json(role);
+      } catch (error) {
         res.status(500).json({ message: error.message });
-    }
-    }
+      }
+    };
+    
+
 
 roleController.postRoles = async (req, res) => {
     try {
-        const { name, devices } = req.body;
+        const { name, devices, permissions } = req.body;
         const newRole = new Role({
           name,
           devices,
+          permissions,
         });
         const savedRole = await newRole.save();
+        console.log(savedRole);
         res.json(savedRole);
       } catch (err) {
         res.status(500).json({ message: err.message });

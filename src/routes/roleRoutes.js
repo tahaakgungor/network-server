@@ -4,7 +4,7 @@ const roleController = require("../controllers/roleController");
 
 router.get("/", roleController.getRoles);
 router.post("/", roleController.postRoles);
-router.get("/:id", roleController.getRole);
+router.get("/user/:name", roleController.getRole);
 router.delete("/:id", roleController.deleteRole);
 router.put("/:id", roleController.updateRole);
 
