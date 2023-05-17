@@ -25,8 +25,8 @@ snmpController.deleteSnmpReg = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-
 };
+
 
 snmpController.updateSnmpRegister = async (req, res) => {
   const { host, community, oid } = req.body;
@@ -36,9 +36,7 @@ snmpController.updateSnmpRegister = async (req, res) => {
 
   } else {
     oidsToArr = oid.split(".");
-    ;
   }
-
   try {
     const updatedRegister = await Snmp.findByIdAndUpdate(req.body._id, {
       host: host,
@@ -51,10 +49,11 @@ snmpController.updateSnmpRegister = async (req, res) => {
   }
 };
 
+
 snmpController.getSelectedSnmpInfo = async (req, res) => {
   try {
     const selectedIds = req.body.ids;
-   
+
     const devices = await Snmp.find({ _id: { $in: selectedIds } });
 
     const snmpDataList = [];
@@ -62,7 +61,6 @@ snmpController.getSelectedSnmpInfo = async (req, res) => {
 
     let completedRequests = 0; // Keep track of completed requests
 
-    // Loop through selected devices and retrieve SNMP data for each one
     for (const device of devices) {
       const session = new snmp.Session({ host: device.host, community: device.community });
       const oids = device.oid.map((oid) => parseInt(oid));
@@ -85,10 +83,6 @@ snmpController.getSelectedSnmpInfo = async (req, res) => {
         completedRequests++; // Increase the completed requests count
 
         if (completedRequests === devices.length) {
-          // If all requests are completed, send the response
-          console.log("snmpDataList", snmpDataList);
-
-          // Create a new SnmpInfos object for each device
           for (const snmpData of snmpDataList) {
             const snmpInfos = new SnmpInfos({
               host: snmpData.host,
@@ -97,7 +91,6 @@ snmpController.getSelectedSnmpInfo = async (req, res) => {
               value: snmpData.value,
             });
 
-            // Save snmpInfos to the database
             snmpInfos.save()
               .then(() => {
                 console.log("snmpInfos saved to database");
@@ -106,31 +99,26 @@ snmpController.getSelectedSnmpInfo = async (req, res) => {
                 console.error("Failed to save snmpInfos to database:", error);
               });
           }
-
           res.json(snmpDataList);
         }
       });
     }
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+
 snmpController.getAllSnmpInfos = async (req, res) => {
   try {
-
- 
     const snmpInfos = await SnmpInfos.find();
-
- 
-
     res.json(snmpInfos);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 snmpController.deleteSnmpInfo = async (req, res) => {
   try {
@@ -141,7 +129,6 @@ snmpController.deleteSnmpInfo = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 
 snmpController.addSnmpInfo = async (req, res) => {

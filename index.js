@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const connectDB = require("./src/config/database");
-const deviceRoutes = require("./src/routes/device-routes");
+const deviceRoutes = require("./src/routes/deviceRoutes");
 const authRoutes = require("./src/routes/authRoutes");
 const roleRoutes = require("./src/routes/roleRoutes");
 const logRoutes = require("./src/routes/logRoutes");
@@ -13,13 +13,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
+
 app.use(cors({ origin: true, credentials: true }));
-
-
 app.use(express.json());
-
-
-
 app.use(session({
   secret: 'mySecretKey', // bu alana güçlü bir rastgele karakter dizisi yazın
   resave: false,
@@ -29,7 +25,6 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // cookie ömrü 24 saat
   }
 }));
-
 
 connectDB();
 
@@ -46,4 +41,4 @@ app.use("/snmp", snmpRoutes);
 
 const port = 5001
 
-app.listen( port, () => console.log(`Server started on port ${port}`));
+app.listen(port, () => console.log(`Server started on port ${port}`));

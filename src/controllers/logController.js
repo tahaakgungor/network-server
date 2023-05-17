@@ -14,6 +14,7 @@ logController.deleteUserLog = async (req, res) => {
   }
 };
 
+
 logController.getUserLog = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -26,11 +27,11 @@ logController.getUserLog = async (req, res) => {
   }
 };
 
+
 logController.getUserLastLog = async (req, res) => {
   try {
     const userId = req.params.id;
-
-   if(!userId) return res.status(404).json({ message: "User not found" }
+    if (!userId) return res.status(404).json({ message: "User not found" }
     )
     const lastLog = await Log.find({ user: userId }).sort({ createdAt: -1 }).limit(1);
 
@@ -40,6 +41,7 @@ logController.getUserLastLog = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 logController.updateUserLog = async (req, res) => {
   try {
@@ -61,6 +63,7 @@ logController.updateUserLog = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 logController.postUserLog = async (req, res) => {
   try {

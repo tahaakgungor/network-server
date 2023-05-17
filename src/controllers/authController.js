@@ -9,22 +9,22 @@ const authController = {};
 
 authController.getUserById = async (req, res) => {
   try {
-  const userId = req.params.id;
-  const user = await User.findById(userId);
-
-  if (!user) {
-  return res.status(404).json({ message: "User not found" });
-  }
-  return res.status(200).json(user);
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json(user);
   } catch (error) {
-  console.error(error);
-  return res.status(500).json({ message: "Server error" });
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
   }
-  };
+};
+
+
 authController.getUser = async (req, res) => {
   try {
-
-    const existingUser = await User.find({ email: req.body.email})
+    const existingUser = await User.find({ email: req.body.email })
     console.log("existingUser", req.body);
     console.log("existingUsesr", existingUser);
     res.status(200).json(existingUser);
@@ -32,6 +32,7 @@ authController.getUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 authController.deleteUser = async (req, res) => {
   try {
@@ -41,6 +42,7 @@ authController.deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 authController.updateUser = async (req, res) => {
   try {
@@ -53,7 +55,6 @@ authController.updateUser = async (req, res) => {
 };
 
 
-
 authController.getUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -62,6 +63,7 @@ authController.getUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 authController.postRoles = async (req, res) => {
   try {
@@ -75,7 +77,6 @@ authController.postRoles = async (req, res) => {
 
 authController.signup = async (req, res) => {
   const { name, email, password, role } = req.body;
-
   try {
     const existingUser = await User.findOne({ email });
     console.log("existingUser", req.body);
@@ -99,16 +100,12 @@ authController.signup = async (req, res) => {
   }
 };
 
+
 authController.login = async (req, res) => {
   const { email, password } = req.body;
-
-
   try {
-
     const user = await User.findOne({ email });
     req.session.userId = user.id;
-
-
 
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
@@ -135,14 +132,10 @@ authController.login = async (req, res) => {
 };
 
 
-
-
 const hashPassword = async (password) => {
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   return hashedPassword;
 };
-
-
 
 module.exports = authController;

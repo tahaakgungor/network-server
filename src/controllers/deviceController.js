@@ -1,25 +1,8 @@
 const Device = require("../models/device");
-// const { NodeSSH } = require("node-ssh");
 
-const { Client } = require("ssh2");
-const conn = new Client();
+const deviceController = {};
 
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-// const { Server } = require("socket.io");
-// const io = new Server(server,{
-//   cors: {
-//       origin: "http://localhost:3000"
-//   }
-// });
-
-// const ssh = new NodeSSH();
-const connections = {};
-const results = [];
-
-const getSelectedDevices = async (req, res) => {
+deviceController.getSelectedDevices = async (req, res) => {
   try {
 
     const selectedDevices = await Device.find({
@@ -32,8 +15,7 @@ const getSelectedDevices = async (req, res) => {
 };
 
 
-
-const getAllDevices = async (req, res) => {
+deviceController.getAllDevices = async (req, res) => {
   try {
     const devices = await Device.find();
     res.json(devices);
@@ -42,12 +24,12 @@ const getAllDevices = async (req, res) => {
   }
 };
 
-async function getDevice(req, res, next) {
+
+deviceController.getDevice = async (req, res, next) => {
   console.log(req.params);
   let device;
   try {
     device = await Device.findOne({ _id: req.params.id });
-
     if (device == null) {
       return res.status(404).json({ message: "Cannot find device" });
     }
@@ -57,10 +39,10 @@ async function getDevice(req, res, next) {
   } finally {
     return res.status(404)
   }
-
 }
 
-const createDevice = async (req, res) => {
+
+deviceController.createDevice = async (req, res) => {
   const device = new Device(req.body);
   try {
     await device.save();
@@ -70,13 +52,12 @@ const createDevice = async (req, res) => {
   }
 };
 
-const updateDevice = async (req, res) => {
+
+deviceController.updateDevice = async (req, res) => {
   console.log("updateDevice", req.body);
   let device;
   try {
     device = await Device.findOne({ _id: req.params.id });
-
-
     if (device == null) {
       return res.status(404).json({ message: "Cannot find device" });
     }
@@ -107,8 +88,8 @@ const updateDevice = async (req, res) => {
   if (req.body.secret != null) {
     res.device.secret = req.body.secret;
   }
-  try {
 
+  try {
     const updatedDevice = await res.device.save();
     console.log("updatedDevice", updatedDevice);
     return res.json(updatedDevice);
@@ -118,7 +99,8 @@ const updateDevice = async (req, res) => {
   }
 };
 
-const deleteDevice = async (req, res) => {
+
+deviceController.deleteDevice = async (req, res) => {
   try {
     const device = await Device.findOne({ _id: req.params.id });
     console.log("deleteDevice", device);
@@ -133,7 +115,24 @@ const deleteDevice = async (req, res) => {
   }
 };
 
+module.exports = deviceController;
+
+// const http = require('http');
+// const server = http.createServer(app);
+// const { Client } = require("ssh2");
+// const conn = new Client();
+// const { NodeSSH } = require("node-ssh");
 // Connect devices
+// const { Server } = require("socket.io");
+// const io = new Server(server,{
+//   cors: {
+//       origin: "http://localhost:3000"
+//   }
+// });
+
+// const ssh = new NodeSSH();
+// const connections = {};
+// const results = [];
 // const connectDevices = async (req, res) => {
 //   try {
 //     const bodi = req.body;
@@ -222,12 +221,6 @@ const deleteDevice = async (req, res) => {
 //   });
 // }
 
-
-
-
-
-
-
 // console.log("connections");
 // // Send command
 // const sendCommand = async (req, res) => {
@@ -281,15 +274,3 @@ const deleteDevice = async (req, res) => {
 // server.listen(3001, () => {
 //   console.log('socket listening on *:3001');
 // });
-
-
-module.exports = {
-  getSelectedDevices,
-  getAllDevices,
-  getDevice,
-  createDevice,
-  updateDevice,
-  deleteDevice,
-  // connectDevices,
-  // sendCommand,
-};
