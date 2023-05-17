@@ -23,7 +23,7 @@ const logSchema = new mongoose.Schema(
       required: false,
     },
     duration: {
-      type: Number,
+      type: String,
       required: false,
     },
     activity: {

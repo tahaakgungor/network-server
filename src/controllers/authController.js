@@ -23,7 +23,7 @@ authController.getUserById = async (req, res) => {
   };
 authController.getUser = async (req, res) => {
   try {
-    
+
     const existingUser = await User.find({ email: req.body.email})
     console.log("existingUser", req.body);
     console.log("existingUsesr", existingUser);
@@ -101,15 +101,14 @@ authController.signup = async (req, res) => {
 
 authController.login = async (req, res) => {
   const { email, password } = req.body;
-  console.log("req.body", req.body);
+
 
   try {
- 
+
     const user = await User.findOne({ email });
     req.session.userId = user.id;
-    console.log("req.session.userId", req.session.userId);
 
-    console.log("user", user);
+
 
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
@@ -120,7 +119,7 @@ authController.login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-  
+
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       jwtSecret,

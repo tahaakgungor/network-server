@@ -21,7 +21,7 @@ const results = [];
 
 const getSelectedDevices = async (req, res) => {
   try {
- 
+
     const selectedDevices = await Device.find({
       _id: { $in: req.params.id }
     });
@@ -75,7 +75,7 @@ const updateDevice = async (req, res) => {
   let device;
   try {
     device = await Device.findOne({ _id: req.params.id });
-    console.log("device", device);
+
 
     if (device == null) {
       return res.status(404).json({ message: "Cannot find device" });
@@ -85,8 +85,8 @@ const updateDevice = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
-  
-  if (req.body.name != null) {  
+
+  if (req.body.name != null) {
     res.device.name = req.body.name;
   }
   if (req.body.ip != null) {
@@ -108,11 +108,11 @@ const updateDevice = async (req, res) => {
     res.device.secret = req.body.secret;
   }
   try {
-    
+
     const updatedDevice = await res.device.save();
     console.log("updatedDevice", updatedDevice);
     return res.json(updatedDevice);
-    
+
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
@@ -223,7 +223,7 @@ const deleteDevice = async (req, res) => {
 // }
 
 
-    
+
 
 
 
@@ -242,7 +242,7 @@ const deleteDevice = async (req, res) => {
 //       res.status(404).json({ error: "Device not connected" });
 //       return;
 //     }
-   
+
 //     conn.exec(command, (err, stream) => {
 //       console.log(stream);
 //       console.log(command)

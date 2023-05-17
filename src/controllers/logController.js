@@ -29,7 +29,7 @@ logController.getUserLog = async (req, res) => {
 logController.getUserLastLog = async (req, res) => {
   try {
     const userId = req.params.id;
- 
+
    if(!userId) return res.status(404).json({ message: "User not found" }
     )
     const lastLog = await Log.find({ user: userId }).sort({ createdAt: -1 }).limit(1);
@@ -74,7 +74,7 @@ logController.postUserLog = async (req, res) => {
       activity,
       notes,
     } = req.body;
-    console.log("req.body", req.body);
+
     const newLog = new Log({
       user,
       date,
