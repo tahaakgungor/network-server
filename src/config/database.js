@@ -3,8 +3,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const connectDB = async () => {
   try {
-    console.log("Connecting to MongoDB...", process.env.DB_USER, process.env.DB_PASSWORD);
-    await mongoose.connect(`mongodb://tahaakgungor:36987412tT@host.docker.internal:27015`), {
+
+    console.log("Connectsing to MongoDB...", process.env.DB_USER, process.env.DB_PASSWORD);
+    await mongoose.connect(`mongodb://tahaakgungor:36987412tT@mongodb:27017`), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     };
